@@ -32,4 +32,9 @@ build/
 ### VS Code ###
 .vscode/
 
+### Docker ###
 .env
+
+### App ###
+
+src/main/resources/application-dev.properties
