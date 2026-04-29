@@ -1,20 +1,57 @@
-## Local Database Configuration
+## 🐘 Local Database Setup
 
-Este proyecto utiliza PostgreSQL como base de datos. Para facilitar el entorno de 
-desarrollo, en la raíz del proyecto se incluye un archivo `docker-compose.yml` que 
-levanta una instancia local usando Docker.
+This project uses PostgreSQL as its database.
+To simplify the development environment, a `docker-compose.yml` file is included at the root of the project to spin up a local instance using Docker.
 
-### Requisitos
-- Docker instalado y corriendo
+---
 
-### Pasos
-1. Copia el archivo de ejemplo: `cp .env.example .env`
-2. Edita `.env` con tus valores
-3. Levanta el contenedor: `docker compose up -d`
-4. Para detenerlo: `docker compose down`
+## 📋 Requirements
 
-### Comprobar conexión
-Puede utilizar el siguiente comando para corroborar que el contenedor responde correctamente
-`docker exec -it finance-api  pg_isready -U <username>`
+* Docker installed and running
 
-Si la respuesta es '/var/run/postgresql:5432 - accepting connections' la creación del contenedor fue exitosa.
+---
+
+## 🚀 Getting Started
+
+1. Copy the example environment file:
+
+cp .env.example .env
+
+2. Update the `.env` file with your desired values
+
+3. Start the container:
+
+docker compose up -d
+
+4. Stop the container:
+
+docker compose down
+
+---
+
+## 🔍 Verify Connection
+
+You can check if the container is running correctly with:
+
+docker exec -it finance-api pg_isready -U <username>
+
+If successful, you should see:
+
+/var/run/postgresql:5432 - accepting connections
+
+---
+
+## 🧪 Running Database Migrations
+
+The application automatically applies database scripts when it starts.
+
+However, you can also run migrations manually using Maven and Flyway:
+
+mvn flyway:migrate 
+-Dflyway.url=<spring.datasource.url> 
+-Dflyway.user=<spring.datasource.username> 
+-Dflyway.password=<spring.datasource.password>
+
+This allows you to apply changes without restarting the application.
+
+---
