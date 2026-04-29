@@ -1,8 +1,8 @@
-package com.finance.finance_api.Model;
+package com.finance.finance_api.model;
 
 import java.time.LocalDateTime;
 
-import com.finance.finance_api.Enum.Role;
+import com.finance.finance_api.enums.Role;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

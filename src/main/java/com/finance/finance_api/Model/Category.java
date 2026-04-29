@@ -1,4 +1,4 @@
-package com.finance.finance_api.Model;
+package com.finance.finance_api.model;
 
 import java.util.List;
 
