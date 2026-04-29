@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres:16
-    container_name: mi-postgres
+    container_name: finance-api
     restart: always
     environment:
       POSTGRES_USER: ${DB_USER}
