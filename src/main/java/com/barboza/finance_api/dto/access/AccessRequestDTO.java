@@ -1,4 +1,4 @@
-package com.barboza.finance_api.dto;
+package com.barboza.finance_api.dto.access;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
