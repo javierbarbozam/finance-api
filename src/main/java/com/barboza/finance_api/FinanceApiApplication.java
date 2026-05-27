@@ -1,4 +1,4 @@
-package com.finance.finance_api;
+package com.barboza.finance_api;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

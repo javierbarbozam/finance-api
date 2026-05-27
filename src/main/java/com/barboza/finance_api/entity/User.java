@@ -1,4 +1,4 @@
-package com.finance.finance_api.model;
+package com.barboza.finance_api.entity;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -8,7 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.finance.finance_api.enums.Role;
+import com.barboza.finance_api.enums.Role;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

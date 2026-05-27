@@ -1,10 +1,10 @@
-package com.finance.finance_api.model;
+package com.barboza.finance_api.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import com.finance.finance_api.enums.TransactionType;
+import com.barboza.finance_api.enums.TransactionType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

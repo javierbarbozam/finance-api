@@ -1,7 +1,8 @@
+name: financeapi
 services:
   postgres:
     image: postgres:16
-    container_name: finance-api
+    container_name: financeapi
     restart: always
     environment:
       POSTGRES_USER: ${DB_USER}
