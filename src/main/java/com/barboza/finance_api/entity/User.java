@@ -61,4 +61,11 @@ public class User implements UserDetails {
     public String getUsername() {
         return email;
     }
+
+    public User(String name, String email, String password, Role role) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
 }
