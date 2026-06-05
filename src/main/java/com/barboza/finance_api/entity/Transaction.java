@@ -32,7 +32,8 @@ public class Transaction {
 
     @Column(nullable = false)
     private BigDecimal amount;
-
+    
+    @Column(nullable = false)
     private String description;
 
     @Enumerated(EnumType.STRING)
@@ -49,8 +50,21 @@ public class Transaction {
     @JoinColumn(name = "category_id")
     private Category category;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
+    }
+
+    public Transaction(BigDecimal amount, String description, TransactionType type, LocalDate date, Category category, User user) {
+        this.amount = amount;
+        this.description = description;
+        this.type = type;
+        this.date = date;
+        this.category = category;
+        this.user = user;
     }
 }

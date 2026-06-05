@@ -8,13 +8,12 @@ import com.barboza.finance_api.dto.auth.AuthRequest;
 import com.barboza.finance_api.dto.auth.AuthResponse;
 import com.barboza.finance_api.entity.User;
 import com.barboza.finance_api.enums.Role;
-import com.barboza.finance_api.repository.UserRepository;
 import com.barboza.finance_api.security.JwtUtils;
 
 @Service
 public class AuthService {
 
-    @Autowired private UserRepository userRepository;
+    @Autowired private UserService userService;
 
     @Autowired private PasswordEncoder passwordEncoder;
 
@@ -22,7 +21,7 @@ public class AuthService {
 
     public AuthResponse register(AuthRequest request) {
 
-        var optional = userRepository.findByEmail(request.getEmail());
+        var optional = userService.findByEmail(request.getEmail());
 
         if(optional.isPresent()) {
             throw new RuntimeException("El correo electrónico ya está registrado.");
@@ -38,7 +37,7 @@ public class AuthService {
             Role.USER
         );
 
-        userRepository.save(user);
+        userService.save(user);
 
         // Generar token con el email para que Spring pueda validarlo en requests futuros
         var token = jwtUtils.generateToken(user.getEmail());
@@ -46,9 +45,7 @@ public class AuthService {
     }
 
     public AuthResponse login(AuthRequest request) {
-        var user = userRepository
-            .findByEmail(request.getEmail())
-            .orElseThrow(() -> new RuntimeException("Correo electrónico inválido."));
+        var user = userService.findByEmailOrThrow(request.getEmail());
 
         // Comparar contraseña recibida con el hash en base de datos
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
