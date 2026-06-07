@@ -5,12 +5,14 @@ import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data @NoArgsConstructor
+@Data @NoArgsConstructor @AllArgsConstructor @Valid
 public class TransactionRequest {
 
     @NotNull(message = "El monto es obligatorio")
