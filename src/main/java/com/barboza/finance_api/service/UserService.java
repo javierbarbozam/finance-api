@@ -3,7 +3,9 @@ package com.barboza.finance_api.service;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.barboza.finance_api.entity.User;
 import com.barboza.finance_api.repository.UserRepository;
@@ -20,7 +22,11 @@ public class UserService {
     public User findByEmailOrThrow(String email) {
         return repository
             .findByEmail(email)
-            .orElseThrow(() -> new RuntimeException("Correo electrónico inválido."));
+            .orElseThrow(() -> new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, 
+                    "El correo electrónico ya está registrado."
+                )
+            );
     }
 
     public User save(User user) {

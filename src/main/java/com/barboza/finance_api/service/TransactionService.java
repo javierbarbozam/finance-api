@@ -28,14 +28,15 @@ public class TransactionService {
         
         var user = userService.findByEmailOrThrow(email);
         
-        var category = categoryService
-            .findById(request.getCategoryId())
-            .orElseThrow(() -> new RuntimeException("Categoría inválida."));
+        var category = categoryService.findByIdOrThrow(request.getCategoryId());
 
         var type = TransactionType.fromString(request.getType());
 
         if(type == null) {
-            throw new RuntimeException("Tipo de transacción inválido.");
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, 
+                "Tipo de transacción inválido."
+            );
         }
 
         var transaction = new Transaction(
@@ -71,8 +72,10 @@ public class TransactionService {
         var isSameUser = isSameUser(transaction, user);
 
         if(!isSameUser) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, 
-            "No tienes permiso para modificar esta transacción");
+            throw new ResponseStatusException(
+                HttpStatus.FORBIDDEN, 
+                "No tiene permiso para modificar esta la transacción."
+            );
         }
         
         if (request.getAmount() != null) {
@@ -85,15 +88,17 @@ public class TransactionService {
             transaction.setDate(request.getDate());
         }
         if (request.getCategoryId() != null) {
-            Category category = categoryService.findById(request.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
+            Category category = categoryService.findByIdOrThrow(request.getCategoryId());
             transaction.setCategory(category);
         }
         if(request.getType() != null) {
             var type = TransactionType.fromString(request.getType());
 
             if(type == null) {
-                throw new RuntimeException("Tipo de transacción inválido.");
+                throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, 
+                "Tipo de transacción inválido."
+            );
             }
             transaction.setType(type);
         }
@@ -110,7 +115,10 @@ public class TransactionService {
         var isSameUser = isSameUser(transaction, user);
 
         if(!isSameUser) {
-            throw new RuntimeException("Usuario inválido");
+            throw new ResponseStatusException(
+                HttpStatus.FORBIDDEN, 
+                "No tiene permiso para eliminar esta transacción."
+            );
         }
 
         repository.delete(transaction);
@@ -121,7 +129,10 @@ public class TransactionService {
     private Transaction findByIdOrThrow(Long id) {
         return repository
             .findById(id)
-            .orElseThrow(() -> new RuntimeException("Transacción no encontrada."));
+            .orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, 
+                "Transacción no encontrada."
+            ));
     }
 
     private boolean isSameUser(Transaction legacy, User user) {

@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.barboza.finance_api.dto.auth.AuthRequest;
 import com.barboza.finance_api.dto.auth.AuthResponse;
 import com.barboza.finance_api.service.AuthService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -19,12 +22,12 @@ public class AuthController {
     @Autowired private AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody AuthRequest request) {
+    public ResponseEntity<AuthResponse> register(@Valid @RequestBody AuthRequest request) {
         return ResponseEntity.ok(authService.register(request));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest request) {
         return ResponseEntity.ok(authService.login(request));
     }
     

@@ -1,8 +1,10 @@
 package com.barboza.finance_api.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.barboza.finance_api.dto.auth.AuthRequest;
 import com.barboza.finance_api.dto.auth.AuthResponse;
@@ -24,7 +26,10 @@ public class AuthService {
         var optional = userService.findByEmail(request.getEmail());
 
         if(optional.isPresent()) {
-            throw new RuntimeException("El correo electrónico ya está registrado.");
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, 
+                "El correo electrónico ya está registrado."
+            );
         }
 
         // Encriptar contraseña
@@ -49,7 +54,10 @@ public class AuthService {
 
         // Comparar contraseña recibida con el hash en base de datos
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Contraseña inválida");
+            throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, 
+                "La contraseña es incorrecta."
+            );
         }
 
         var token = jwtUtils.generateToken(user.getEmail());
