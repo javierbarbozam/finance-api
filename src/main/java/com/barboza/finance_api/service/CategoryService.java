@@ -8,7 +8,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.barboza.finance_api.dto.category.CategoryRequest;
 import com.barboza.finance_api.dto.category.CategoryResponse;
-import com.barboza.finance_api.dto.transaction.TransactionResponse;
 import com.barboza.finance_api.entity.Category;
 import com.barboza.finance_api.repository.CategoryRepository;
 
@@ -26,7 +25,7 @@ public class CategoryService {
     public CategoryResponse create(CategoryRequest request, String email) {
         userService.findByEmailOrThrow(email);
 
-        var optional = repository.findByNameIgnoreCase(request.getName().toLowerCase());
+        var optional = repository.findByNameIgnoreCase(request.getName());
 
         if(optional.isPresent()) {
             throw new ResponseStatusException(
@@ -43,6 +42,24 @@ public class CategoryService {
         repository.save(category);
 
         return toCategoryResponse(category);
+    }
+
+    public CategoryResponse update(Long id, CategoryRequest request, String email) {
+
+        userService.findByEmailOrThrow(email);
+        var category = findByIdOrThrow(id);
+
+        if(request.getName() != null) {
+            category.setName(request.getName());
+        }
+
+        if(request.getIcon() != null) {
+            category.setIcon(request.getIcon());
+        }
+
+        var saved = repository.save(category);
+
+        return toCategoryResponse(saved);
     }
 
     public Category findByIdOrThrow(Long id) {
