@@ -63,6 +63,13 @@ public class CategoryService {
         return toCategoryResponse(saved);
     }
 
+    public void delete(Long id, String email) {
+        userService.findByEmailOrThrow(email);
+        var category = findByIdOrThrow(id);
+
+        repository.delete(category);
+    }
+
     public List<CategoryResponse> getAll(String email) {
         userService.findByEmailOrThrow(email);
 
@@ -83,6 +90,8 @@ public class CategoryService {
                 )
             );
     }
+
+    // PRIVATE METHODS
 
     private CategoryResponse toCategoryResponse(Category entity) {
         return new CategoryResponse(
