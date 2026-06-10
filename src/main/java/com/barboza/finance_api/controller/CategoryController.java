@@ -20,9 +20,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
-
-
 @RestController
 public class CategoryController {
     @Autowired private CategoryService service;
@@ -40,5 +37,10 @@ public class CategoryController {
         @Valid @RequestBody CategoryRequest request,
         @AuthenticationPrincipal String email) {
         return ResponseEntity.ok(service.update(id, request, email));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<CategoryResponse>> getAll() {
+        return ResponseEntity.ok(service.getAll());
     }
 }

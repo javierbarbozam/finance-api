@@ -1,5 +1,6 @@
 package com.barboza.finance_api.service;
 
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -60,6 +61,17 @@ public class CategoryService {
         var saved = repository.save(category);
 
         return toCategoryResponse(saved);
+    }
+
+    public List<CategoryResponse> getAll(String email) {
+        userService.findByEmailOrThrow(email);
+
+        var categories = repository.findAllByOrderByNameAsc();
+
+        return categories
+            .stream()
+            .map(this::toCategoryResponse)
+            .toList();
     }
 
     public Category findByIdOrThrow(Long id) {
