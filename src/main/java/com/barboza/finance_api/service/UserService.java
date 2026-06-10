@@ -24,7 +24,7 @@ public class UserService {
             .findByEmail(email)
             .orElseThrow(() -> new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, 
-                    "El correo electrónico ya está registrado."
+                    "El correo electrónico no está registrado."
                 )
             );
     }

@@ -31,4 +31,9 @@ public class Category {
 
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     private List<Transaction> transactions;
+
+    public Category(String name, String icon) {
+        this.name = name;
+        this.icon = icon;
+    }
 }
