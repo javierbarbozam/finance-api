@@ -1,7 +1,7 @@
 package com.barboza.finance_api.service;
 
 import java.util.List;
-import java.util.Optional;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -9,6 +9,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.barboza.finance_api.dto.category.CategoryRequest;
 import com.barboza.finance_api.dto.category.CategoryResponse;
 import com.barboza.finance_api.entity.Category;
+import com.barboza.finance_api.entity.User;
 import com.barboza.finance_api.repository.CategoryRepository;
 
 @Service
@@ -23,13 +24,8 @@ public class CategoryService {
         this.userService = userService;
     }
 
-    public Optional<Category> findById(Long id) {
-        return repository.findById(id);
-    }
-
     public CategoryResponse create(CategoryRequest request, String email) {
-        userService.findByEmailOrThrow(email);
-
+        var user = userService.findByEmailOrThrow(email);
         var optional = repository.findByNameIgnoreCase(request.getName());
 
         if(optional.isPresent()) {
@@ -41,7 +37,8 @@ public class CategoryService {
     
         var category = new Category(
             request.getName(),
-            request.getIcon()
+            request.getIcon(),
+            user
         );
 
         repository.save(category);
@@ -51,8 +48,16 @@ public class CategoryService {
 
     public CategoryResponse update(Long id, CategoryRequest request, String email) {
 
-        userService.findByEmailOrThrow(email);
+        var user = userService.findByEmailOrThrow(email);
         var category = findByIdOrThrow(id);
+        var isSameUser = isSameUser(category, user);
+
+        if(!isSameUser) {
+            throw new ResponseStatusException(
+                HttpStatus.FORBIDDEN,
+                "No tiene permiso para modificar esta categoría"
+            );
+        }
 
         if(request.getName() != null) {
             category.setName(request.getName());
@@ -68,16 +73,22 @@ public class CategoryService {
     }
 
     public void delete(Long id, String email) {
-        userService.findByEmailOrThrow(email);
+        var user = userService.findByEmailOrThrow(email);
         var category = findByIdOrThrow(id);
+        var isSameUser = isSameUser(category, user);
+
+        if(!isSameUser) {
+            throw new ResponseStatusException(
+                HttpStatus.FORBIDDEN, 
+                "No tiene permiso para eliminar esta transacción");
+        }
 
         repository.delete(category);
     }
 
-    public List<CategoryResponse> getAll(String email) {
-        userService.findByEmailOrThrow(email);
-
-        var categories = repository.findAllByOrderByNameAsc();
+    public List<CategoryResponse> getCategoriesByUser(String email) {
+        var user = userService.findByEmailOrThrow(email);
+        var categories = repository.findByUserOrderByNameAsc(user);
 
         return categories
             .stream()
@@ -97,11 +108,14 @@ public class CategoryService {
 
     // PRIVATE METHODS
 
+    private boolean isSameUser(Category legacy, User user) {
+        return legacy.getUser().getId().equals(user.getId());
+    }
+
     private CategoryResponse toCategoryResponse(Category entity) {
         return new CategoryResponse(
             entity.getId(),
             entity.getName(),
-            entity.getColor(),
             entity.getIcon()
         );
     }

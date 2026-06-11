@@ -73,7 +73,7 @@ public class TransactionService {
         if(!isSameUser) {
             throw new ResponseStatusException(
                 HttpStatus.FORBIDDEN, 
-                "No tiene permiso para modificar esta la transacción."
+                "No tiene permiso para modificar esta la transacción"
             );
         }
         

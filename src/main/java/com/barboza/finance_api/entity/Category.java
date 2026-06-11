@@ -27,8 +27,6 @@ public class Category {
     @Column(nullable = false)
     private String name;
 
-    private String color;
-
     private String icon;
 
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
@@ -38,8 +36,9 @@ public class Category {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    public Category(String name, String icon) {
+    public Category(String name, String icon, User user) {
         this.name = name;
         this.icon = icon;
+        this.user = user;
     }
 }
