@@ -44,7 +44,7 @@ public class CategoryController {
 
     @GetMapping
     public ResponseEntity<List<CategoryResponse>> getAll(@AuthenticationPrincipal String email) {
-        return ResponseEntity.ok(service.getAll(email));
+        return ResponseEntity.ok(service.getCategoriesByUser(email));
     }
 
     @DeleteMapping("/{id}")
