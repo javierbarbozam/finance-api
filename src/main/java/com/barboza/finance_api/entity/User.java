@@ -51,6 +51,9 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Transaction> transactions;
+    
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Category> categories;
 
     @PrePersist
     protected void onCreate() {
