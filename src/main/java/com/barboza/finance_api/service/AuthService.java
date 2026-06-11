@@ -1,6 +1,5 @@
 package com.barboza.finance_api.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,11 +14,11 @@ import com.barboza.finance_api.security.JwtUtils;
 @Service
 public class AuthService {
 
-    @Autowired private UserService userService;
+    private UserService userService;
 
-    @Autowired private PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
-    @Autowired private JwtUtils jwtUtils;
+    private JwtUtils jwtUtils;
 
     public AuthResponse register(AuthRequest request) {
 

@@ -2,7 +2,6 @@ package com.barboza.finance_api.service;
 
 import java.util.List;
 import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -15,9 +14,14 @@ import com.barboza.finance_api.repository.CategoryRepository;
 @Service
 public class CategoryService {
 
-    @Autowired private CategoryRepository repository;
+    private final CategoryRepository repository;
 
-    @Autowired private UserService userService;
+    private final UserService userService;
+
+    CategoryService(CategoryRepository repository, UserService userService) {
+        this.repository = repository;
+        this.userService = userService;
+    }
 
     public Optional<Category> findById(Long id) {
         return repository.findById(id);

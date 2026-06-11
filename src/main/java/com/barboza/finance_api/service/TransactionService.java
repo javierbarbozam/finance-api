@@ -2,7 +2,6 @@ package com.barboza.finance_api.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -18,11 +17,11 @@ import com.barboza.finance_api.repository.TransactionRepository;
 @Service
 public class TransactionService {
 
-    @Autowired private TransactionRepository repository;
+    private TransactionRepository repository;
 
-    @Autowired private UserService userService;
+    private UserService userService;
 
-    @Autowired private CategoryService categoryService;
+    private CategoryService categoryService;
 
     public TransactionResponse create(TransactionRequest request, String email) {
         

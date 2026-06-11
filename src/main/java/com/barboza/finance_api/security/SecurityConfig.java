@@ -1,6 +1,5 @@
 package com.barboza.finance_api.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,7 +14,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity //activa el módulo de seguridad de Spring
 public class SecurityConfig {
     
-    @Autowired
     private JwtFilter jwtFilter;
 
     @Bean
