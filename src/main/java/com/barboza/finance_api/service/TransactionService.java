@@ -23,6 +23,12 @@ public class TransactionService {
 
     private CategoryService categoryService;
 
+    TransactionService(TransactionRepository repository, UserService userService, CategoryService categoryService) {
+        this.repository = repository;
+        this.userService = userService;
+        this.categoryService = categoryService;
+    }
+
     public TransactionResponse create(TransactionRequest request, String email) {
         
         var user = userService.findByEmailOrThrow(email);

@@ -11,8 +11,5 @@ public class CategoryRequest {
 
     @NotBlank(message = "Debe especificar un nombre")
     private String name;
-
-    private String color;
-
     private String icon;
 }

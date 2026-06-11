@@ -17,7 +17,11 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-    private JwtUtils jwtUtils;
+    final JwtUtils jwtUtils;
+
+    JwtFilter(JwtUtils jwtUtils) {
+        this.jwtUtils = jwtUtils;
+    }
 
     @Override
     // Metodo principal usado por spring para cualquier request

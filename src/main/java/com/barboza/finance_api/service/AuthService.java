@@ -14,11 +14,17 @@ import com.barboza.finance_api.security.JwtUtils;
 @Service
 public class AuthService {
 
-    private UserService userService;
+    private final UserService userService;
 
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    private JwtUtils jwtUtils;
+    private final JwtUtils jwtUtils;
+
+    AuthService(PasswordEncoder passwordEncoder, UserService userService, JwtUtils jwtUtils) {
+        this.passwordEncoder = passwordEncoder;
+        this.userService = userService;
+        this.jwtUtils = jwtUtils;
+    }
 
     public AuthResponse register(AuthRequest request) {
 
