@@ -1,7 +1,6 @@
 package com.barboza.finance_api.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.barboza.finance_api.dto.budget.BudgetRequest;

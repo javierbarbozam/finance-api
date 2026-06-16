@@ -1,7 +1,10 @@
 package com.barboza.finance_api.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -13,6 +16,7 @@ import com.barboza.finance_api.entity.Transaction;
 import com.barboza.finance_api.entity.User;
 import com.barboza.finance_api.enums.TransactionType;
 import com.barboza.finance_api.repository.TransactionRepository;
+import com.barboza.finance_api.specification.TransactionSpecification;
 
 @Service
 public class TransactionService {
@@ -58,11 +62,19 @@ public class TransactionService {
         return toTransactionResponse(transaction);
     }
 
-    public List<TransactionResponse> getTransactionsByUser(String email) {
+    public List<TransactionResponse> getAllBy(String email, TransactionType type,
+        Long categoryId, LocalDate startDate, LocalDate endDate) {
 
         var user = userService.findByEmailOrThrow(email);
 
-        var transacciones = repository.findByUserOrderByDateDesc(user);
+        var spec = Specification
+            .<Transaction>unrestricted()
+            .and(TransactionSpecification.hasUser(user))
+            .and(TransactionSpecification.hasType(type))
+            .and(TransactionSpecification.hasCategory(categoryId))
+            .and(TransactionSpecification.dateBetween(startDate, endDate));
+
+        var transacciones = repository.findAll(spec, Sort.by(Sort.Direction.DESC, "date"));
 
         return transacciones
             .stream()

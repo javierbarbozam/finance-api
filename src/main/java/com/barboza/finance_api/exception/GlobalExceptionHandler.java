@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.barboza.finance_api.dto.exception.ApiException;
@@ -60,20 +61,42 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(JwtException.class)
     public ResponseEntity<ApiException> handleJwtException(JwtException ex) {
         
-        String mensaje;
+        String message;
 
         if (ex instanceof ExpiredJwtException) {
-            mensaje = "La sesión ha expirado. Por favor ingrese nuevamente.";
+            message = "La sesión ha expirado. Por favor ingrese nuevamente.";
         } else {
-            mensaje = "Ocurrió un error de autenticación. Por favor inice sesión nuevamente.";
+            message = "Ocurrió un error de autenticación. Por favor inice sesión nuevamente.";
         }
 
         ApiException error = new ApiException(
             HttpStatus.UNAUTHORIZED.value(),
-            mensaje,
+            message,
             LocalDateTime.now()
         );
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiException> handleTypeMismatchException(MethodArgumentTypeMismatchException ex) {
+        String message;
+
+        if (ex.getRequiredType() != null && ex.getRequiredType().isEnum()) {
+            message = String.format(
+                "Valor inválido para '%s'. Valores permitidos: %s",
+                ex.getName(),
+                java.util.Arrays.toString(ex.getRequiredType().getEnumConstants())
+            );
+        } else {
+            message = String.format("Valor inválido para el parámetro '%s'", ex.getName());
+        }
+
+        ApiException error = new ApiException(
+            HttpStatus.BAD_REQUEST.value(),
+            message,
+            LocalDateTime.now()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 }
