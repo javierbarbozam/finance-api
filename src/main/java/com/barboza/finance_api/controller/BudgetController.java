@@ -52,7 +52,7 @@ public class BudgetController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(
-        @RequestParam Long id,
+        @PathVariable Long id,
         @AuthenticationPrincipal String email) {
         service.delete(id, email);
         return ResponseEntity.noContent().build();
