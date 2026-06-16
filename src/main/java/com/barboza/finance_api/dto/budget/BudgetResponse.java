@@ -12,4 +12,11 @@ public class BudgetResponse {
     private BigDecimal amount;
     private Integer month;
     private Integer year;
+    
+    public BudgetResponse(Long id, BigDecimal amount, Integer month, Integer year) {
+        this.id = id;
+        this.amount = amount;
+        this.month = month;
+        this.year = year;
+    }
 }

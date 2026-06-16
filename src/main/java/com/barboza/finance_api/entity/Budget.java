@@ -35,4 +35,11 @@ public class Budget {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;    
+
+    public Budget(BigDecimal amount, Integer month, Integer year, User user) {
+        this.amount = amount;
+        this.month = month;
+        this.year = year;
+        this.user = user;
+    }
 }
