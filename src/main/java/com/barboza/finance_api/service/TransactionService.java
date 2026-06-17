@@ -15,6 +15,8 @@ import com.barboza.finance_api.entity.Category;
 import com.barboza.finance_api.entity.Transaction;
 import com.barboza.finance_api.entity.User;
 import com.barboza.finance_api.enums.TransactionType;
+import com.barboza.finance_api.projection.summary.MonthSummaryProjection;
+import com.barboza.finance_api.projection.summary.YearSummaryProjection;
 import com.barboza.finance_api.repository.TransactionRepository;
 import com.barboza.finance_api.specification.TransactionSpecification;
 
@@ -141,6 +143,13 @@ public class TransactionService {
         repository.delete(transaction);
     }
 
+    public List<MonthSummaryProjection> getMonthSummary(User user, Integer month, Integer year) {
+        return repository.getSummaryByUserAndMonthAndYear(user, month, year);
+    }
+
+    public List<YearSummaryProjection> getYearSummary(User user, Integer year) {
+        return repository.getSummaryByUserAndYear(user, year);
+    }
     // PRIVATE METHODS
 
     private Transaction findByIdOrThrow(Long id) {
