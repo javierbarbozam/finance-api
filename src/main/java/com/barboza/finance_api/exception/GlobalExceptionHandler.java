@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -12,9 +13,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.server.ResponseStatusException;
 
 import com.barboza.finance_api.dto.exception.ApiException;
-
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -58,25 +57,26 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 
-    @ExceptionHandler(JwtException.class)
-    public ResponseEntity<ApiException> handleJwtException(JwtException ex) {
+    // TODO: Move to JwtUtils
+    // @ExceptionHandler(JwtException.class)
+    // public ResponseEntity<ApiException> handleJwtException(JwtException ex) {
         
-        String message;
+    //     String message;
 
-        if (ex instanceof ExpiredJwtException) {
-            message = "La sesión ha expirado. Por favor ingrese nuevamente.";
-        } else {
-            message = "Ocurrió un error de autenticación. Por favor inice sesión nuevamente.";
-        }
+    //     if (ex instanceof ExpiredJwtException) {
+    //         message = "La sesión ha expirado. Por favor ingrese nuevamente.";
+    //     } else {
+    //         message = "Ocurrió un error de autenticación. Por favor inice sesión nuevamente.";
+    //     }
 
-        ApiException error = new ApiException(
-            HttpStatus.UNAUTHORIZED.value(),
-            message,
-            LocalDateTime.now()
-        );
+    //     ApiException error = new ApiException(
+    //         HttpStatus.UNAUTHORIZED.value(),
+    //         message,
+    //         LocalDateTime.now()
+    //     );
 
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
-    }
+    //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+    // }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ApiException> handleTypeMismatchException(MethodArgumentTypeMismatchException ex) {
@@ -90,6 +90,38 @@ public class GlobalExceptionHandler {
             );
         } else {
             message = String.format("Valor inválido para el parámetro '%s'", ex.getName());
+        }
+
+        ApiException error = new ApiException(
+            HttpStatus.BAD_REQUEST.value(),
+            message,
+            LocalDateTime.now()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiException> handleNotReadableException(HttpMessageNotReadableException ex) {
+        String message = "La solicitud tiene un campo inválido.";
+
+        Throwable cause = ex.getCause();
+        if (cause instanceof InvalidFormatException ife && !ife.getPath().isEmpty()) {
+            String field = ife.getPath().get(0).getFieldName();
+            message = String.format("El campo '%s' tiene un formato inválido.", field);
+
+            // Tells the client expected format
+            String type = ife.getTargetType() != null ? ife.getTargetType().getSimpleName() : null;
+            if ("LocalDate".equals(type)) {
+                message = String.format(
+                    "El campo '%s' tiene un formato inválido. Formato esperado: yyyy-MM-dd (ej: 2026-06-16).",
+                    field
+                );
+            } else {
+                message = String.format(
+                    "El campo '%s' tiene un formato inválido. Se esperaba un valor de tipo %s.",
+                    field, type
+                );
+            }
         }
 
         ApiException error = new ApiException(
