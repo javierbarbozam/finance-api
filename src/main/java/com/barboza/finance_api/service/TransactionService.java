@@ -163,6 +163,7 @@ public class TransactionService {
             entity.getType().name(),
             entity.getCategory() != null ? entity.getCategory().getName() : null,
             entity.getId(),
+            entity.getDate(),
             entity.getCreatedAt()
         );
     }

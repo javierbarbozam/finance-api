@@ -3,6 +3,7 @@ package com.barboza.finance_api.controller;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RestController;
@@ -47,10 +48,10 @@ public class TransactionController {
         @AuthenticationPrincipal String email,
         @RequestParam(required = false) TransactionType type,
         @RequestParam(required = false) Long categoryId,
-        @RequestParam(required = false) LocalDate startDate,
-        @RequestParam(required = false) LocalDate endDate
+        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
     ) {
-        return ResponseEntity.ok(service.getAllBy(email, type, categoryId, endDate, endDate));
+        return ResponseEntity.ok(service.getAllBy(email, type, categoryId, startDate, endDate));
     }
     
     @PutMapping("/{id}")

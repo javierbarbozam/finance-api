@@ -48,6 +48,7 @@ public class BudgetService {
         return toBudgetResponse(saved);
     }
 
+    // TODO: Allows to have 2 budgets for same month of the year
     public BudgetResponse update (Long id, BudgetRequest request, String email) {
         var user = userService.findByEmailOrThrow(email);
         var budget = findByIdOrThrow(id);
