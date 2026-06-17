@@ -15,6 +15,11 @@ import org.springframework.web.server.ResponseStatusException;
 import com.barboza.finance_api.dto.exception.ApiException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -130,5 +135,51 @@ public class GlobalExceptionHandler {
             LocalDateTime.now()
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ApiException> handleConstraintViolationException(ConstraintViolationException ex) {
+        String messages = ex.getConstraintViolations()
+            .stream()
+            .map(this::buildViolationMessage)
+            .collect(Collectors.joining(", "));
+
+        ApiException error = new ApiException(
+            HttpStatus.BAD_REQUEST.value(),
+            messages,
+            LocalDateTime.now()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    // PRIVATE METHODS
+
+    private String buildViolationMessage(ConstraintViolation<?> violation) {
+        String field = extractFieldName(violation.getPropertyPath().toString());
+        Object invalidValue = violation.getInvalidValue();
+        String expected = extractExpectedValue(violation);
+
+        return String.format(
+            "El parámetro '%s' tiene un valor inválido (%s). %s",
+            field, invalidValue, expected
+        );
+    }
+
+    private String extractFieldName(String propertyPath) {
+        String[] parts = propertyPath.split("\\.");
+        return parts[parts.length - 1];
+    }
+
+    private String extractExpectedValue(ConstraintViolation<?> violation) {
+        var annotation = violation.getConstraintDescriptor().getAnnotation();
+
+        if (annotation instanceof Min min) {
+            return String.format("Debe ser mayor o igual a %d.", min.value());
+        }
+        if (annotation instanceof Max max) {
+            return String.format("Debe ser menor o igual a %d.", max.value());
+        }
+
+        return violation.getMessage();
     }
 }
